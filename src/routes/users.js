@@ -32,4 +32,23 @@ router.post('/', async (req,res) => {
   }
 })
 
+router.post('/auth', async (req,res) => {
+  const { email, password } = req.body
+  
+  if (!email) return res.status(400).json({ error: "E-mail é obrigatório." });
+  if (!password) return res.status(400).json({ error: "Senha é obrigatória." });
+  
+  try {
+    const result = await User.auth(req.body)
+
+    if(result.error)
+      return res.status(400).json(result)
+    
+    res.cookie('token', result.token, { httpOnly: true, secure: true, sameSite: 'none' });
+    res.status(200).json(result)
+  } catch (e) {
+    res.status(400).json({ error: 'Error ao se autenticar' })
+  }
+})
+
 export default router

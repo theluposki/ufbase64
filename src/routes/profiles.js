@@ -1,8 +1,9 @@
 import { Router } from 'express'
+import { validateToken } from '../middlewares/validToken.js'
 
 const router = Router()
 
-router.get('/', (req,res) => {
+router.get('/', validateToken, (req,res) => {
   res.status(200).json([
     { 
       id: 'c7135139-4467-4202-ba95-c6a6fcc049da',
