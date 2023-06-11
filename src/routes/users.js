@@ -22,6 +22,9 @@ router.post('/', async (req,res) => {
   
   try {
     const result = await User.register(req.body)
+
+    if(result.error)
+      return res.status(400).json(result)
     
     res.status(201).json(result)
   } catch (e) {
