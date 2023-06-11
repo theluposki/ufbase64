@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import User from '../model/User.js'
+
 const router = Router()
 
 router.get('/', (req,res) => {
@@ -13,13 +14,14 @@ router.get('/', (req,res) => {
 })
 
 router.post('/', async (req,res) => {
-  const { email, password } = req.body
+  const { nickname, email, password } = req.body
   
-  if(!email || !password) 
-    return res.status(400).json({ error: 'Usuário e senha são obrigatorios' })
+  if (!nickname) return res.status(400).json({ error: "Nome de usuário é obrigatório." });
+  if (!email) return res.status(400).json({ error: "E-mail é obrigatório." });
+  if (!password) return res.status(400).json({ error: "Senha é obrigatória." });
   
   try {
-    const result = await User.register(email, password)
+    const result = await User.register(req.body)
     
     res.status(201).json(result)
   } catch (e) {

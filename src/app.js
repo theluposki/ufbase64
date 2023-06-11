@@ -10,7 +10,7 @@ app.use(cors(config.cors))
 app.use(cookieParser());
 app.use(express.json())
 
-routes(app)
+await routes(app)
 
 app.get('/', (req, res) => {
   res.status(200).json({ status: 'ok' })

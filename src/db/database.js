@@ -3,9 +3,11 @@ import config from '../config.js'
 
 const pool = mariadb.createPool(config.mariadb);
 
+//console.log(config.mariadb)
+
 pool.getConnection()
   .then(conn => {
-    console.log('Conexão estabelecida com sucesso.');
+    console.log('[ DB ] Conexão estabelecida com sucesso.');
     conn.release();
   })
   .catch(err => {

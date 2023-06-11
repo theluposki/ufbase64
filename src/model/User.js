@@ -1,11 +1,70 @@
-import { randomUUID } from 'node:crypto'
+import db from '../db/database.js'
+import bcrypt from "bcryptjs";
 
-const generateUUID = () => randomUUID()
+import { generateUUID } from '../crypto/index.js'
+import config from '../config.js';
 
 export default {
-  register (email, password) {
-    return { 
-      message: 'Usuário criado com sucesso!' 
+  async register (body) {
+    const { nickname, email, password } = body
+
+    const id = generateUUID()
+    const id2 = generateUUID()
+
+    let conn;
+
+    try {
+      conn = await db.getConnection();
+      await conn.beginTransaction();
+  
+      const userExists = await conn.query("SELECT email FROM users WHERE email=?",[email]);
+
+      const profileExists = await conn.query("SELECT nickname FROM user_profiles WHERE nickname=?", [nickname]);
+  
+      if (userExists.length > 0 || profileExists.length > 0) {
+        return { error: "E-mail ou nome de usuário já existe!" };
+      }
+  
+      const salt = bcrypt.genSaltSync(10);
+      const hashPassword = bcrypt.hashSync(password, salt);
+  
+      const query1 = `INSERT INTO users (id, email, password) VALUES (?,?,?);`;
+      const query2 = `INSERT INTO user_profiles (id, user_id, nickname, bio, picture, links) VALUES (?,?,?,?,?,?);`;
+  
+      await conn.query(query1, [
+        id,
+        email,
+        hashPassword,
+      ]);
+  
+      const profileDefault = {
+        bio: "",
+        picture: `${config.app.baseUrl}/uploads/150x150.svg`,
+        links: "[]",
+      };
+  
+      await conn.query(query2, [
+        id2,
+        id,
+        nickname,
+        profileDefault.bio,
+        profileDefault.picture,
+        profileDefault.links,
+      ]);
+  
+      await conn.commit();
+  
+      return { success: "Usuário registrado com sucesso!" };
+    } catch (error) {
+      if (conn) {
+        await conn.rollback();
+      }
+      console.log("Erro durante a transação:", error);
+      return { error: "Ocorreu um erro durante a transação." };
+    } finally {
+      if (conn) {
+        conn.release();
+      }
     }
   },
   auth (email, password) {

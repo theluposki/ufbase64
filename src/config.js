@@ -1,4 +1,6 @@
+import * as dotenv from 'dotenv'
 import { readFileSync }from "node:fs"
+dotenv.config()
 
 export default {
   certificates: {
@@ -7,7 +9,8 @@ export default {
   },
   app: {
     port: process.env.APP_PORT || 3000,
-    host: process.env.APP_HOST || `https://localhost`
+    host: process.env.APP_HOST || `https://localhost`,
+    baseUrl: process.env.BASE_URL
   },
   cors: {
     origin: 'https://localhost:5173',
