@@ -43,10 +43,11 @@ router.get("/requests", validateToken, async (req, res) => {
 
 
 router.post("/add-friend", validateToken, async (req, res) => {
-    const { nickname } = req.body
+    const { nickname, requestId } = req.body
   
     if(!nickname) return res.status(400).json({ error: "informe o usuário."})
-  
+    if(!requestId) return res.status(400).json({ error: "informe o indentificador do pedido."})
+    
     try {
       const result = await Friends.addFriend(req.user.id ,req.body);
   
@@ -54,7 +55,7 @@ router.post("/add-friend", validateToken, async (req, res) => {
   
       res.status(201).json(result);
     } catch (e) {
-      res.status(400).json({ error: "Error ao aceitar amizade" });
+      res.status(400).json({ error: "Error não foi possivel adicionar amizade" });
     }
   });
 
