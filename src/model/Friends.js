@@ -75,4 +75,8 @@ export default {
       if (conn) conn.release();
     }
   },
+
+  async addFriend (userId, body) {
+    return { userId, body }
+  }
 };

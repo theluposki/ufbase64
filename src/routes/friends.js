@@ -39,6 +39,23 @@ router.get("/requests", validateToken, async (req, res) => {
     } catch (e) {
       res.status(400).json({ error: "Error ao buscar pedidos de amizade" });
     }
+});
+
+
+router.post("/add-friend", validateToken, async (req, res) => {
+    const { nickname } = req.body
+  
+    if(!nickname) return res.status(400).json({ error: "informe o usuário."})
+  
+    try {
+      const result = await Friends.addFriend(req.user.id ,req.body);
+  
+      if (result.error) return res.status(400).json(result);
+  
+      res.status(201).json(result);
+    } catch (e) {
+      res.status(400).json({ error: "Error ao aceitar amizade" });
+    }
   });
 
 export default router;
