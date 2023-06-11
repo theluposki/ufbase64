@@ -29,4 +29,16 @@ router.post("/send-request", validateToken, async (req, res) => {
   }
 });
 
+router.get("/requests", validateToken, async (req, res) => {  
+    try {
+      const result = await Friends.getRequests(req.user.id);
+  
+      if (result.error) return res.status(400).json(result);
+  
+      res.status(200).json(result);
+    } catch (e) {
+      res.status(400).json({ error: "Error ao buscar pedidos de amizade" });
+    }
+  });
+
 export default router;
