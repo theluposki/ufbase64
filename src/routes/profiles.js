@@ -1,21 +1,24 @@
 import { Router } from 'express'
 import { validateToken } from '../middlewares/validToken.js'
+import Profiles from '../model/Profiles.js'
 
 const router = Router()
 
-router.get('/', validateToken, (req,res) => {
-  res.status(200).json([
-    { 
-      id: 'c7135139-4467-4202-ba95-c6a6fcc049da',
-      user_id:'7a31ff5a-96a6-48fc-bef7-59793c94c09b',
-      name: 'luposki',
-      bio: 'Software engineer',
-      picture: 'https://i.pravatar.cc/150?img=33',
-      links: ['theluposki.com'],
-      created_at: Date.now(),
-      updated_at: Date.now()
-    },
-  ])
+router.post('/search-by-nickname', async (req,res) => {
+  const { nickname } = req.body
+  
+  if (!nickname) return res.status(400).json({ error: "Nome de usuário é obrigatório." });
+  
+  try {
+    const result = await Profiles.searchByLikeNickname(nickname)
+
+    if(result.error)
+      return res.status(400).json(result)
+    
+    res.status(200).json(result)
+  } catch (e) {
+    res.status(400).json({ error: 'Error buscar usuário' })
+  }
 })
 
 export default router

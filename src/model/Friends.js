@@ -90,9 +90,9 @@ export default {
 
       const FriendUser = await conn.query(
         `SELECT u.id, up.user_id, up.nickname, up.picture 
-         FRON user_profiles AS up 
+         FROM user_profiles AS up 
          INNER JOIN users AS u ON u.id = up.user_id
-         WHERE u.nickname = ?;`,
+         WHERE up.nickname = ?;`,
         [nickname]
       );
 
@@ -143,4 +143,28 @@ export default {
       if (conn) conn.release();
     }
   },
+
+  async myFriends(userId) {
+    let conn;
+
+    try {
+      conn = await db.getConnection();
+
+      const friends = await conn.query(
+        `
+        SELECT f.id, up.nickname, up.picture
+        FROM user_profiles AS up 
+        INNER JOIN friends AS f 
+        ON up.user_id = f.user2_id
+        WHERE f.user1_id = ?;
+        `,
+        [userId]
+      );
+      return friends
+    } catch (error) {
+      if (error) return { error: "Não foi possivel buscar amigos." };
+    } finally {
+      if (conn) conn.release();
+    }
+  }
 };

@@ -59,4 +59,16 @@ router.post("/add-friend", validateToken, async (req, res) => {
     }
   });
 
+  router.get("/my", validateToken, async (req, res) => {  
+    try {
+      const result = await Friends.myFriends(req.user.id);
+  
+      if (result.error) return res.status(400).json(result);
+  
+      res.status(200).json(result);
+    } catch (e) {
+      res.status(400).json({ error: "Error ao buscar amigos" });
+    }
+});
+
 export default router;
