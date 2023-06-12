@@ -36,10 +36,7 @@ export default {
     try {
       conn = await db.getConnection();
 
-      const myProfile = await conn.query(
-        "SELECT picture FROM user_profiles WHERE user_id=?;",
-        [userId]
-      );
+      const myProfile = await conn.query("SELECT picture FROM user_profiles WHERE user_id=?;", [userId]);
 
       const oldImage = myProfile[0].picture.split("/uploads/")[1];
 
