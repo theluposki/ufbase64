@@ -42,7 +42,7 @@ export default {
 
       const profileDefault = {
         bio: "",
-        picture: `${config.app.baseUrl}/uploads/150x150.svg`,
+        picture: `${config.app.baseUrl}/default/150x150.svg`,
         links: "[]",
       };
 

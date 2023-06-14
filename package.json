@@ -5,8 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node src/",
-    "dev": "node --watch src/",
+    "start": "node --no-warnings src/",
+    "dev": "node --no-warnings --watch src/",
     "cert": "openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout server.key -out server.crt",
     "test": ""
   },
